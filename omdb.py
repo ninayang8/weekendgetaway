@@ -26,27 +26,32 @@ def open_file():
 def get_title_and_rating():
     d = {}
     movie_list = open_file()
-    for movie in movie_list:
-        url = create_request_url(movie)
-        try:
-            r = requests.get(url)
-            data = json.loads(r.text)
-            if data == {"Response":"False", "Error":"Movie not found!"}:
-                continue
-            else:
-                d[movie] = data['imdbRating']
-        except:
-            return None
-    print(d)
+    for i in range(25):
+        for movie in movie_list:
+            url = create_request_url(movie)
+            try:
+                r = requests.get(url)
+                data = json.loads(r.text)
+                if data == {"Response":"False", "Error":"Movie not found!"}:
+                    continue
+                else:
+                    d[movie] = data['imdbRating']
+            except:
+                return None
     return d     
 
-def create_database():
+def create_database(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
-    conn = sqlite3.connect(path+'/'+'movies.db')
+    conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
 
-
+def setUpMoviesTable(cur, conn):
+    data = get_title_and_rating()
+    cur.execute('CREATE TABLE IF NOT EXISTS Movies("id" TEXT PRIMARY KEY, "title" TEXT, "rating" REAL)')
+    for d in range(len(data)):
+        cur.execute('INSERT INTO Restaurants (restaurant_id, title, rating) VALUES (?, ?, ?)', (d, data[d]["title"], float(data[d]["rating"])))
+    conn.commit()
 # def request_data(url):
 
 #     headers = {'Authorization': 'Bearer %s' % API_KEY,}
@@ -55,6 +60,8 @@ def create_database():
 def main():
     open_file()
     get_title_and_rating()
+    cur, conn = create_database('movies.db')
+    setUpMoviesTable(cur, conn)
 
 if __name__ == "__main__":
     main()
