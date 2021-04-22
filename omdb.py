@@ -50,7 +50,7 @@ def setUpMoviesTable(cur, conn):
     data = get_title_and_rating()
     cur.execute('CREATE TABLE IF NOT EXISTS Movies("id" TEXT PRIMARY KEY, "title" TEXT, "rating" REAL)')
     for d in range(len(data)):
-        cur.execute('INSERT INTO Restaurants (restaurant_id, title, rating) VALUES (?, ?, ?)', (d, data[d]["title"], float(data[d]["rating"])))
+        cur.execute('INSERT INTO Movies (id, title, rating) VALUES (?, ?, ?)', (d, data[d]["title"], float(data[d]["rating"])))
     conn.commit()
 # def request_data(url):
 
