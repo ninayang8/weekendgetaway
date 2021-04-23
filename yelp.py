@@ -30,7 +30,10 @@ def setUpDatabase(db_name):
     cur = conn.cursor()
 
     cur.execute('DROP TABLE IF EXISTS Restaurants')
-    cur.execute('CREATE TABLE IF NOT EXISTS Restaurants ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "location" TEXT, "address" TEXT, "category" TEXT, "rating" REAL, "price" TEXT)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Restaurants ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "category" TEXT, "rating" REAL, "price" TEXT)')
+
+    cur.execute('DROP TABLE IF EXISTS Locations')
+    cur.execute('CREATE TABLE IF NOT EXISTS Locations ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "location" TEXT, "address" TEXT, "latitude" REAL, "longitude" REAL)')
 
     conn.commit()
 
@@ -40,9 +43,10 @@ def addEntriesToDatabase(cur, conn, data, location):
     
     for d in data['businesses']:
         try:
-            cur.execute('INSERT INTO Restaurants (restaurant_id, name, location, address, category, rating, price) VALUES (?, ?, ?, ?, ?, ?, ?)', (d["id"], d["name"], location, d["location"]["address1"], d["categories"][0]["title"], float(d["rating"]), d["price"]))
+            cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (d["id"], d["name"], d["categories"][0]["title"], float(d["rating"]), d["price"],))
+            cur.execute('INSERT INTO Locations (restaurant_id, name, location, address, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)', (d["id"], d["name"], location, d["location"]["address1"], float(d["coordinates"]["latitude"]), float(d["coordinates"]["longitude"])))
         except:
-            cur.execute('INSERT INTO Restaurants (restaurant_id, name, location, address, category, rating, price) VALUES (?, ?, ?, ?, ?, ?, ?)', (d["id"], d["name"], location, d["location"]["address1"], d["categories"][0]["title"], float(d["rating"]), "$$$$"))
+            cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (d["id"], d["name"], d["categories"][0]["title"], float(d["rating"]), "$$$$",))
 
     conn.commit()
 
