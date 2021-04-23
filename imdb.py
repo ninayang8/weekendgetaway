@@ -4,6 +4,8 @@ import requests
 import re
 import os
 import csv
+import sqlite3
+import json
 
 def get_title(soup):
     anchor = soup.find('div', class_ = 'lister list detail sub-list')
@@ -57,10 +59,47 @@ def get_movie_reviews(soup, links):
         review_count = review_count[:-5]
         review_count = int(review_count)
         movie_reviews.append(review_count)
-    
     return movie_reviews
 
+def where_stream(soup, links):
+    stream_list = []
+    for link in links:
+        movie_url = "https://www.imdb.com" + link
+        r = requests.get(movie_url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        anchor = soup.find('span', class_ = "buybox__cta").text
+        place = ""
+        #remove beginning and trailing whit space
+        anchor2 = anchor.lstrip()
+        anchor3 = anchor2.rstrip()
+        #remove "watch on"
+        anchor4 = anchor3.replace('Watch on ','')
+        place += anchor4
+        stream_list.append(place)
 
+    return stream_list
+
+def make_txt_file(soup):
+    pass
+
+def setUpDatabase(db_name):
+
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+
+    cur.execute('CREATE TABLE IF NOT EXISTS Movies ("id" TEXT PRIMARY KEY, "title" TEXT, "platform" TEXT, "reviews" REAL)')
+    conn.commit()
+    return cur, conn
+
+def addEntriesToDatabase(cur, conn, soup, links):
+    title = get_title(soup)
+    platform = where_stream(soup, links)
+    reviews = get_movie_reviews(soup, links)
+    x = 0
+    for i in range(100):
+        cur.execute('INSERT INTO Movies (id, title, platform, reviews) VALUES (?, ?, ?, ?)', (x, title[x], platform[x], reviews[x],))
+        x += 1
 
 
 def main():
@@ -72,6 +111,11 @@ def main():
     links = get_link(soup)
     #get_movie_ratings(soup, links)
     get_movie_reviews(soup, links)
+    where_stream(soup, links)
+
+    cur, conn = setUpDatabase("Database.db")
+    addEntriesToDatabase(cur, conn, soup, links)
+
 
 if __name__ == "__main__":
     main()
