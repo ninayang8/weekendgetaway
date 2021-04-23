@@ -13,9 +13,9 @@ import sqlite3
 API_KEY = "YuijH5s1qzWZVSOfuGknf5--ccUjwSLWR2XDFJSrghEuRipM8ouL-wm4-ib3ARRdqTZVW3Pd8rMoA4jPf6I6DKBTOCu4AdorRGMVPv1PL1SWssRnjXfSDip1ACh6YHYx"
 CLIENT_ID = "IGLDk-j90I9w05zBZUo5qw"
 
-def get_url(location):
+def get_url(location, offset):
 
-    return 'https://api.yelp.com/v3/businesses/search?location=' + location + '&limit=50'
+    return 'https://api.yelp.com/v3/businesses/search?location=' + location + '&limit=25' + '&offset=' + str(offset)
 
 def request_data(url):
 
@@ -29,23 +29,35 @@ def setUpDatabase(db_name):
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
 
-    cur.execute("DROP TABLE IF EXISTS Restaurants")
-    cur.execute('CREATE TABLE IF NOT EXISTS Restaurants ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "location" TEXT, "category" TEXT, "rating" REAL, "price" TEXT)')
+    cur.execute('DROP TABLE IF EXISTS Restaurants')
+    cur.execute('CREATE TABLE IF NOT EXISTS Restaurants ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "location" TEXT, "address" TEXT, "category" TEXT, "rating" REAL, "price" TEXT)')
+
+    conn.commit()
 
     return cur, conn
 
 def addEntriesToDatabase(cur, conn, data, location):
     
-    pass
+    for d in data['businesses']:
+        try:
+            cur.execute('INSERT INTO Restaurants (restaurant_id, name, location, address, category, rating, price) VALUES (?, ?, ?, ?, ?, ?, ?)', (d["id"], d["name"], location, d["location"]["address1"], d["categories"][0]["title"], float(d["rating"]), d["price"]))
+        except:
+            cur.execute('INSERT INTO Restaurants (restaurant_id, name, location, address, category, rating, price) VALUES (?, ?, ?, ?, ?, ?, ?)', (d["id"], d["name"], location, d["location"]["address1"], d["categories"][0]["title"], float(d["rating"]), "$$$$"))
+
+    conn.commit()
 
 def main():
 
-    url = get_url('New York City')
-    data = request_data(url)
-    data = json.loads(data)
-    cur, conn = setUpDatabase("restaurants.db")
+    cur, conn = setUpDatabase("Database.db")
 
-    print(data['businesses'])
+    for x in range(4):
+
+        url = get_url('Ann Arbor', x * 25)
+        data = request_data(url)
+        data = json.loads(data)
+
+        addEntriesToDatabase(cur, conn, data, "Ann Arbor")
+
 
 
 if __name__ == "__main__":
