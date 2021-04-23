@@ -10,6 +10,7 @@ import json
 import requests
 import sqlite3
 import numpy as np
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
 API_KEY = "YuijH5s1qzWZVSOfuGknf5--ccUjwSLWR2XDFJSrghEuRipM8ouL-wm4-ib3ARRdqTZVW3Pd8rMoA4jPf6I6DKBTOCu4AdorRGMVPv1PL1SWssRnjXfSDip1ACh6YHYx"
@@ -72,6 +73,44 @@ def RatingVsPricePlot(cur, conn):
     plt.bar(values.keys(), values.values())
     plt.show()
 
+def MapPlot(cur, conn):
+
+    mapbox_access_token = "pk.eyJ1IjoiYW5kcnNuYXNobGV5IiwiYSI6ImNrbnV0dDkycjBlOHQydW8zeWl3cGs2NGwifQ.DyqaNgUdx8TyxGt1zMZLiQ"
+    
+    name =[]
+    latitude = []
+    longitude = []
+
+    cursor = cur.execute("SELECT name, latitude, longitude FROM Locations")
+    for row in cursor:
+        name.append(row[0])
+        latitude.append(row[1])
+        longitude.append(row[2])
+
+    fig = go.Figure(go.Scattermapbox(
+        lat=latitude,
+        lon=longitude,
+        mode='markers',
+        marker=go.scattermapbox.Marker(size=9),
+        text=name,
+    ))
+
+    fig.update_layout(
+        autosize=True,
+        hovermode='closest',
+        mapbox=dict(
+            accesstoken=mapbox_access_token,
+            bearing=0,
+            center=dict(
+                lat=42.271,
+                lon=-83.702
+            ),
+            pitch=0,
+            zoom=10
+        ),
+    )
+
+    fig.show()
 
 def main():
 
@@ -85,7 +124,8 @@ def main():
 
     #     addEntriesToDatabase(cur, conn, data, "Ann Arbor")
 
-    RatingVsPricePlot(cur, conn)
+    # RatingVsPricePlot(cur, conn)
+    MapPlot(cur, conn)
 
 
 if __name__ == "__main__":
