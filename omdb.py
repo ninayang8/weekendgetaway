@@ -23,22 +23,49 @@ def open_file():
         list.append(movie)
     return list
 
-def get_title_and_rating():
-    d = {}
-    movie_list = open_file()
-    for i in range(25):
-        for movie in movie_list:
-            url = create_request_url(movie)
-            try:
-                r = requests.get(url)
-                data = json.loads(r.text)
-                if data == {"Response":"False", "Error":"Movie not found!"}:
-                    continue
-                else:
-                    d[movie] = data['imdbRating']
-            except:
-                return None
-    return d     
+def get_title_and_rating(cur, conn):
+    title_and_rating = []
+    cur.execute('SELECT title from Movies')
+    movie_list = cur.fetchall()
+
+    for movie in movie_list:
+        url = create_request_url(movie)
+        try:
+            r = requests.get(url)
+            data = json.loads(r.text)
+            if data == {"Response":"False", "Error":"Movie not found!"}:
+                continue
+            else:
+                t = (movie[0], data['imdbRating'])
+                title_and_rating.append(t) 
+        except:
+            return None
+    return title_and_rating
+
+def get_box_office(cur, conn):
+    box_office = []
+    cur.execute('SELECT title from Movies')
+    movie_list = cur.fetchall()
+
+    for movie in movie_list:
+        url = create_request_url(movie)
+        try:
+            r = requests.get(url)
+            data = json.loads(r.text)
+            b = ''
+            if data['BoxOffice'] != "N/A":
+                for x in data['BoxOffice']:
+                    if x != '$' and x != ',':
+                        b += x
+            else:
+                b = 'N/A'
+                                        
+            box_office.append(b)
+        except: 
+            pass
+    
+    return box_office
+               
 
 def create_database(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
@@ -47,10 +74,14 @@ def create_database(db_name):
     return cur, conn
 
 def setUpMoviesTable(cur, conn):
-    data = get_title_and_rating()
-    cur.execute('CREATE TABLE IF NOT EXISTS Movies("id" TEXT PRIMARY KEY, "title" TEXT, "rating" REAL)')
-    for d in range(len(data)):
-        cur.execute('INSERT INTO Movies (id, title, rating) VALUES (?, ?, ?)', (d, data[d]["title"], float(data[d]["rating"])))
+    movie_and_rating = get_title_and_rating(cur, conn)
+    box_office = get_box_office(cur, conn)
+
+    cur.execute('CREATE TABLE IF NOT EXISTS omdbMovies("id" TEXT PRIMARY KEY, "title" TEXT, "rating" REAL, "box_office" TEXT)')
+    x = 1
+    for i in range(len(movie_and_rating)):
+        cur.execute('INSERT INTO omdbMovies (id, title, rating, box_office) VALUES (?, ?, ?, ?)', (x, movie_and_rating[i][0], movie_and_rating[i][1], box_office[i], ))
+        x += 1
     conn.commit()
 # def request_data(url):
 
@@ -58,10 +89,12 @@ def setUpMoviesTable(cur, conn):
 #     r = requests.get(url, headers=headers)
 #     return r.text
 def main():
-    open_file()
-    get_title_and_rating()
-    cur, conn = create_database('movies.db')
+
+    cur, conn = create_database('Database.db')
+    get_title_and_rating(cur, conn)
+    get_box_office(cur, conn)
     setUpMoviesTable(cur, conn)
+    
 
 if __name__ == "__main__":
     main()
