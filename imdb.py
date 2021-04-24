@@ -74,6 +74,8 @@ def where_stream(soup, links):
         anchor3 = anchor2.rstrip()
         #remove "watch on"
         anchor4 = anchor3.replace('Watch on ','')
+        if anchor4 == "See Showtimes & Tickets":
+            anchor4 = 'N/A'
         place += anchor4
         stream_list.append(place)
 
@@ -87,8 +89,7 @@ def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
-
-    cur.execute('CREATE TABLE IF NOT EXISTS Movies ("id" TEXT PRIMARY KEY, "title" TEXT, "platform" TEXT, "reviews" REAL)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Movies ("id" TEXT PRIMARY KEY, "title" TEXT, "platform" TEXT, "reviews" INTEGER)')
     conn.commit()
     return cur, conn
 
@@ -98,8 +99,9 @@ def addEntriesToDatabase(cur, conn, soup, links):
     reviews = get_movie_reviews(soup, links)
     x = 0
     for i in range(100):
-        cur.execute('INSERT INTO Movies (id, title, platform, reviews) VALUES (?, ?, ?, ?)', (x, title[x], platform[x], reviews[x],))
+        cur.execute('INSERT INTO Movies (id, title, platform, reviews) VALUES (?, ?, ?, ?)', (i+1, title[x], platform[x], reviews[x],))
         x += 1
+    conn.commit()
 
 
 def main():
