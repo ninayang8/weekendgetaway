@@ -3,6 +3,7 @@ import os
 import requests
 import sqlite3
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 API_KEY = "2a2f5075"
 
@@ -95,21 +96,9 @@ def RatingVsBoxOfficePlot(cur, conn):
             rating.append(row[0])
             x = int(row[1])
             boxoffice.append(x)
-    
-    values = {}
 
-    for x in range(len(rating)):
-        if rating[x] not in values:
-            values[rating[x]] = []
-            values[rating[x]].append[1]
-        values[boxoffice[x]].append(rating[x])
-
-
-    for x in values.keys():
-        values[x] = sum(values[x]) / len(values[x])
-    
-    plt.bar(values.keys(), values.values())
-    plt.show()
+    fig = px.scatter(rating, boxoffice)
+    fig.show()
 
 def main():
 

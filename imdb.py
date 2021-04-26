@@ -6,6 +6,7 @@ import os
 import csv
 import sqlite3
 import json
+import plotly.express as px
 
 def get_title(soup):
     anchor = soup.find('div', class_ = 'lister list detail sub-list')
@@ -81,9 +82,6 @@ def where_stream(soup, links):
 
     return stream_list
 
-def make_txt_file(soup):
-    pass
-
 def setUpDatabase(db_name):
 
     path = os.path.dirname(os.path.abspath(__file__))
@@ -104,6 +102,17 @@ def addEntriesToDatabase(cur, conn, soup, links):
         x += 1
     conn.commit()
 
+def createScatter(cur, conn):
+    rating = []
+    reviews = []
+    cursor = cur.execute('SELECT rating FROM omdbMovies')
+    for row in cursor:
+        rating.append(float(row[0]))
+    cursor1 = cur.execute('SELECT reviews FROM Movies')
+    for row in cursor1:
+        reviews.append(int(row[0]))
+    fig = px.scatter(rating, reviews)
+    fig.show()
 
 def main():
     url = 'https://www.imdb.com/list/ls091520106/'
@@ -111,13 +120,14 @@ def main():
     soup = BeautifulSoup(r.text, 'html.parser')
 
     get_title(soup)
-    links = get_link(soup)
-    #get_movie_ratings(soup, links)
-    get_movie_reviews(soup, links)
-    where_stream(soup, links)
+    # links = get_link(soup)
+    # #get_movie_ratings(soup, links)
+    # get_movie_reviews(soup, links)
+    # where_stream(soup, links)
 
     cur, conn = setUpDatabase("Database.db")
-    addEntriesToDatabase(cur, conn, soup, links)
+    # addEntriesToDatabase(cur, conn, soup, links)
+    createScatter(cur, conn)
 
 
 if __name__ == "__main__":
