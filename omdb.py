@@ -2,6 +2,7 @@ import json
 import os
 import requests
 import sqlite3
+import matplotlib.pyplot as plt
 
 API_KEY = "2a2f5075"
 
@@ -76,25 +77,47 @@ def create_database(db_name):
 def setUpMoviesTable(cur, conn):
     movie_and_rating = get_title_and_rating(cur, conn)
     box_office = get_box_office(cur, conn)
-
     cur.execute('CREATE TABLE IF NOT EXISTS omdbMovies("id" TEXT PRIMARY KEY, "title" TEXT, "rating" REAL, "box_office" TEXT)')
     x = 1
     for i in range(len(movie_and_rating)):
         cur.execute('INSERT INTO omdbMovies (id, title, rating, box_office) VALUES (?, ?, ?, ?)', (x, movie_and_rating[i][0], movie_and_rating[i][1], box_office[i], ))
         x += 1
     conn.commit()
-# def request_data(url):
 
-#     headers = {'Authorization': 'Bearer %s' % API_KEY,}
-#     r = requests.get(url, headers=headers)
-#     return r.text
+def RatingVsBoxOfficePlot(cur, conn):
+
+    rating = []
+    boxoffice = []
+
+    cursor = cur.execute("SELECT rating, box_office FROM omdbMovies")
+    for row in cursor:
+        if row[1] != "N/A":
+            rating.append(row[0])
+            x = int(row[1])
+            boxoffice.append(x)
+    
+    values = {}
+
+    for x in range(len(rating)):
+        if rating[x] not in values:
+            values[rating[x]] = []
+            values[rating[x]].append[1]
+        values[boxoffice[x]].append(rating[x])
+
+
+    for x in values.keys():
+        values[x] = sum(values[x]) / len(values[x])
+    
+    plt.bar(values.keys(), values.values())
+    plt.show()
+
 def main():
 
     cur, conn = create_database('Database.db')
-    get_title_and_rating(cur, conn)
-    get_box_office(cur, conn)
-    setUpMoviesTable(cur, conn)
-    
+    # get_title_and_rating(cur, conn)
+    # get_box_office(cur, conn)
+    # setUpMoviesTable(cur, conn)
+    RatingVsBoxOfficePlot(cur, conn)
 
 if __name__ == "__main__":
     main()

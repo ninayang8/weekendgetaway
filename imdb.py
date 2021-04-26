@@ -69,7 +69,7 @@ def where_stream(soup, links):
         soup = BeautifulSoup(r.text, 'html.parser')
         anchor = soup.find('span', class_ = "buybox__cta").text
         place = ""
-        #remove beginning and trailing whit space
+        #remove beginning and trailing white space
         anchor2 = anchor.lstrip()
         anchor3 = anchor2.rstrip()
         #remove "watch on"
@@ -89,6 +89,7 @@ def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
+    cur.execute("DROP TABLE IF EXISTS Movie")
     cur.execute('CREATE TABLE IF NOT EXISTS Movies ("id" TEXT PRIMARY KEY, "title" TEXT, "platform" TEXT, "reviews" INTEGER)')
     conn.commit()
     return cur, conn
