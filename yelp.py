@@ -16,9 +16,13 @@ import matplotlib.pyplot as plt
 API_KEY = "YuijH5s1qzWZVSOfuGknf5--ccUjwSLWR2XDFJSrghEuRipM8ouL-wm4-ib3ARRdqTZVW3Pd8rMoA4jPf6I6DKBTOCu4AdorRGMVPv1PL1SWssRnjXfSDip1ACh6YHYx"
 CLIENT_ID = "IGLDk-j90I9w05zBZUo5qw"
 
-def get_url(location, offset):
+def get_url(cur, conn, location):
 
-    return 'https://api.yelp.com/v3/businesses/search?location=' + location + '&limit=25' + '&offset=' + str(offset)
+    rows = cur.execute('SELECT restaurant_id FROM Restaurants')
+    count = 0
+    for row in rows:
+        count += 1
+    return 'https://api.yelp.com/v3/businesses/search?location=' + location + '&limit=25' + '&offset=' + str(count)
 
 def request_data(url):
 
@@ -42,13 +46,17 @@ def setUpDatabase(db_name):
 
 def addEntriesToDatabase(cur, conn, data, location):
     
+    rows = cur.execute('SELECT restaurant_id FROM Restaurants')
+    count = 0
+    for row in rows:
+        count += 1
     for d in data['businesses']:
         try:
-            cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (d["id"], d["name"], d["categories"][0]["title"], float(d["rating"]), d["price"],))
-            cur.execute('INSERT INTO Locations (restaurant_id, name, location, address, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)', (d["id"], d["name"], location, d["location"]["address1"], float(d["coordinates"]["latitude"]), float(d["coordinates"]["longitude"])))
+            cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (count, d["name"], d["categories"][0]["title"], float(d["rating"]), d["price"],))
+            cur.execute('INSERT INTO Locations (restaurant_id, name, location, address, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)', (count, d["name"], location, d["location"]["address1"], float(d["coordinates"]["latitude"]), float(d["coordinates"]["longitude"])))
         except:
-            cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (d["id"], d["name"], d["categories"][0]["title"], float(d["rating"]), "$$$$",))
-
+            cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (count, d["name"], d["categories"][0]["title"], float(d["rating"]), "$$$$",))
+        count += 1
     conn.commit()
 
 def RatingVsPricePlot(cur, conn):
@@ -67,11 +75,40 @@ def RatingVsPricePlot(cur, conn):
             values[len(price[x])] = []
         values[len(price[x])].append(rating[x])
 
+    f = open("yelp_calculations.txt", "w")
+
     for x in values.keys():
         values[x] = sum(values[x]) / len(values[x])
+        dollars = ""
+        for y in range(x):
+            dollars += "$"
+        f.write(dollars + " price has an average of " + str(values[x]) + " ratings.\n")
     
     plt.bar(values.keys(), values.values())
     plt.show()
+
+def StreetVsRating(cur, conn):
+
+    streetRatings = {}
+
+    cursor = cur.execute("SELECT rating, address FROM Restaurants JOIN Locations WHERE Locations.name = Restaurants.name")
+    for row in cursor:
+        address = row[1].split()
+        address = address[-2] + " " + address[-1]
+        if address not in streetRatings:
+            streetRatings[address] = []
+        streetRatings[address].append(row[0])
+
+    # f = open("yelp_calculations.txt", "a")
+    # f.write("\n------------------------------------------------\n------------------------------------------------\n\n")
+
+    for x in streetRatings.keys():
+        streetRatings[x] = sum(streetRatings[x]) / len(streetRatings[x])
+    #     f.write(x + " has an average of " + str(streetRatings[x]) + " ratings on the street.\n")
+
+    lst = list(streetRatings.items())
+    print(lst)
+
 
 def MapPlot(cur, conn):
 
@@ -116,16 +153,19 @@ def main():
 
     cur, conn = setUpDatabase("Database.db")
 
-    # for x in range(4):
+    # cur.execute("DROP TABLE IF EXISTS Restaurants")
+    # cur.execute("DROP TABLE IF EXISTS Locations")
 
-    #     url = get_url('Ann Arbor', x * 25)
-    #     data = request_data(url)
-    #     data = json.loads(data)
+    # url = get_url(cur, conn, 'Ann Arbor')
+    # data = request_data(url)
+    # data = json.loads(data)
 
-    #     addEntriesToDatabase(cur, conn, data, "Ann Arbor")
+    # addEntriesToDatabase(cur, conn, data, "Ann Arbor")
 
     # RatingVsPricePlot(cur, conn)
-    MapPlot(cur, conn)
+    StreetVsRating(cur, conn)
+    # MapPlot(cur, conn)
+    
 
 
 if __name__ == "__main__":

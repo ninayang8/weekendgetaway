@@ -1,0 +1,61 @@
+$$ price has an average of 3.953781512605042 ratings.
+$ price has an average of 4.154545454545454 ratings.
+$$$ price has an average of 3.8181818181818183 ratings.
+$$$$ price has an average of 4.433333333333334 ratings.
+
+------------------------------------------------
+------------------------------------------------
+
+Washington St has an average of 3.75 ratings on the street.
+Detroit St has an average of 4.166666666666667 ratings on the street.
+Liberty St has an average of 3.9583333333333335 ratings on the street.
+State St has an average of 3.85 ratings on the street.
+Main St has an average of 3.9565217391304346 ratings on the street.
+Jackson Ave has an average of 4.083333333333333 ratings on the street.
+Maple Rd has an average of 4.416666666666667 ratings on the street.
+4th Ave has an average of 4.5 ratings on the street.
+5th Ave has an average of 4.3 ratings on the street.
+William St has an average of 4.0 ratings on the street.
+Rosewood St has an average of 4.5 ratings on the street.
+Plymouth Rd has an average of 4.0 ratings on the street.
+Packard St has an average of 4.25 ratings on the street.
+Washtenaw Ave has an average of 3.888888888888889 ratings on the street.
+Nickels Arcade has an average of 4.0 ratings on the street.
+Huron St has an average of 4.0 ratings on the street.
+Maynard St has an average of 4.0 ratings on the street.
+Plaza Dr has an average of 4.5 ratings on the street.
+E Liberty has an average of 4.0 ratings on the street.
+Eisenhower Pkwy has an average of 4.1 ratings on the street.
+Valley Dr has an average of 4.25 ratings on the street.
+University Ave has an average of 3.875 ratings on the street.
+Stadium Blvd has an average of 4.4 ratings on the street.
+Broadway St has an average of 4.166666666666667 ratings on the street.
+Ashley St has an average of 3.875 ratings on the street.
+Depot St has an average of 3.5 ratings on the street.
+Catherine St has an average of 3.5 ratings on the street.
+Zeeb Rd has an average of 4.0 ratings on the street.
+311 Maynard has an average of 3.5 ratings on the street.
+Jefferson St has an average of 4.5 ratings on the street.
+Jackson Rd has an average of 4.0 ratings on the street.
+Thayer St has an average of 4.0 ratings on the street.
+Dexter Ave has an average of 4.0 ratings on the street.
+Carpenter Rd has an average of 3.75 ratings on the street.
+Church St has an average of 3.5 ratings on the street.
+1st St has an average of 3.5 ratings on the street.
+Hogback Rd has an average of 3.5 ratings on the street.
+Conor O'neill's has an average of 3.5 ratings on the street.
+Boardwalk Dr has an average of 3.5 ratings on the street.
+Braun Ct has an average of 4.0 ratings on the street.
+N Main has an average of 4.5 ratings on the street.
+Monroe St has an average of 3.5 ratings on the street.
+Packard Rd has an average of 4.0 ratings on the street.
+3010 Washtenaw has an average of 4.0 ratings on the street.
+Lohr Cir has an average of 3.5 ratings on the street.
+Division St has an average of 4.0 ratings on the street.
+Arbor-Saline Rd has an average of 4.0 ratings on the street.
+Fuller Ct has an average of 4.5 ratings on the street.
+Liberty Rd has an average of 5.0 ratings on the street.
+Industrial Hwy has an average of 4.0 ratings on the street.
+Washtenaw Rd has an average of 4.5 ratings on the street.
+Fourth Ave has an average of 3.5 ratings on the street.
+Saline Rd has an average of 4.5 ratings on the street.
