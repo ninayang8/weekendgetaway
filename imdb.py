@@ -7,6 +7,7 @@ import csv
 import sqlite3
 import json
 import plotly.express as px
+import plotly.graph_objects as go
 
 def get_title(soup):
     anchor = soup.find('div', class_ = 'lister list detail sub-list')
@@ -111,7 +112,11 @@ def createScatter(cur, conn):
     cursor1 = cur.execute('SELECT reviews FROM Movies')
     for row in cursor1:
         reviews.append(int(row[0]))
-    fig = px.scatter(rating, reviews)
+    fig = px.scatter(x = rating, y = reviews)
+    fig.update_layout(
+    title="Reviews vs Movie Ratings",
+    xaxis_title="Movie Ratings",
+    yaxis_title="Number of Reviews")
     fig.show()
 
 def main():
