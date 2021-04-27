@@ -103,7 +103,7 @@ def addEntriesToDatabase(cur, conn, soup, links):
         x += 1
     conn.commit()
 
-def createScatter(cur, conn):
+def RatingVsReviews(cur, conn):
     rating = []
     reviews = []
     cursor = cur.execute('SELECT rating FROM omdbMovies')
@@ -119,6 +119,35 @@ def createScatter(cur, conn):
     yaxis_title="Number of Reviews")
     fig.show()
 
+def PlatformVsRating(cur,conn):
+    platform = []
+    rating = []
+
+    cursor = cur.execute('SELECT rating FROM omdbMovies')
+    for row in cursor:
+        rating.append(float(row[0]))
+    cursor1 = cur.execute('SELECT platform FROM Movies')
+    for row in cursor1:
+        reviews.append(str(row[0]))
+    platform_count = {}
+    for x in platform:
+        if x not in platform_count:
+            platform_count[x] = 1
+        else:
+            platform_count[x] += 1
+    cumulative_rating = {}
+    for i in range(len(platform)):
+        if platform[i] not in cumulative_rating:
+            cumulative_rating[platform[i]] = rating[i]
+        else:
+            cumulative_rating[platform[i]] += rating[i]
+    for x in platform_count.keys():
+        platform_count[x] = cumulative_rating[x] / platform_count[x]
+    
+
+
+
+
 def main():
     url = 'https://www.imdb.com/list/ls091520106/'
     r = requests.get(url)
@@ -132,7 +161,7 @@ def main():
 
     cur, conn = setUpDatabase("Database.db")
     # addEntriesToDatabase(cur, conn, soup, links)
-    createScatter(cur, conn)
+    RatingVsReviews(cur, conn)
 
 
 if __name__ == "__main__":
