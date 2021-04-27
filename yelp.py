@@ -4,7 +4,6 @@
 # Ashley Anderson (andrsn), Anthony Ho (anthhocy), Nina Yang (ninayang)
 # 04.16.2021   
 #
-
 import os
 import json
 import requests
@@ -25,25 +24,17 @@ def get_url(cur, conn, location):
     return 'https://api.yelp.com/v3/businesses/search?location=' + location + '&limit=25' + '&offset=' + str(count)
 
 def request_data(url):
-
     headers = {'Authorization': 'Bearer %s' % API_KEY,}
     r = requests.get(url, headers=headers)
     return r.text
-
 def setUpDatabase(db_name):
-
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
-
     cur.execute('CREATE TABLE IF NOT EXISTS Restaurants ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "category" TEXT, "rating" REAL, "price" TEXT)')
-
     cur.execute('CREATE TABLE IF NOT EXISTS Locations ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "location" TEXT, "address" TEXT, "latitude" REAL, "longitude" REAL)')
-
     conn.commit()
-
     return cur, conn
-
 def addEntriesToDatabase(cur, conn, data, location):
     
     rows = cur.execute('SELECT restaurant_id FROM Restaurants')
@@ -58,12 +49,9 @@ def addEntriesToDatabase(cur, conn, data, location):
             cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (count, d["name"], d["categories"][0]["title"], float(d["rating"]), "$$$$",))
         count += 1
     conn.commit()
-
 def RatingVsPricePlot(cur, conn):
-
     rating = []
     price = []
-
     cursor = cur.execute("SELECT rating, price FROM Restaurants")
     for row in cursor:
         rating.append(row[0])
@@ -113,7 +101,7 @@ def StreetVsRating(cur, conn):
 def MapPlot(cur, conn):
 
     mapbox_access_token = "pk.eyJ1IjoiYW5kcnNuYXNobGV5IiwiYSI6ImNrbnV0dDkycjBlOHQydW8zeWl3cGs2NGwifQ.DyqaNgUdx8TyxGt1zMZLiQ"
-    
+
     name =[]
     latitude = []
     longitude = []
@@ -162,6 +150,7 @@ def main():
 
     # addEntriesToDatabase(cur, conn, data, "Ann Arbor")
 
+    RatingVsPricePlot(cur, conn)
     # RatingVsPricePlot(cur, conn)
     StreetVsRating(cur, conn)
     # MapPlot(cur, conn)
