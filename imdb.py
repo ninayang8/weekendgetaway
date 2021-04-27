@@ -128,7 +128,7 @@ def PlatformVsRating(cur,conn):
         rating.append(float(row[0]))
     cursor1 = cur.execute('SELECT platform FROM Movies')
     for row in cursor1:
-        reviews.append(str(row[0]))
+        platform.append(str(row[0]))
     platform_count = {}
     for x in platform:
         if x not in platform_count:
@@ -144,9 +144,12 @@ def PlatformVsRating(cur,conn):
     for x in platform_count.keys():
         platform_count[x] = cumulative_rating[x] / platform_count[x]
     
-
-
-
+    fig = px.bar(platform_count.keys(), platform_count.values())
+    fig.update_layout(
+    title="Average Movie Ratings of Movies Available on Each Platform",
+    xaxis_title="Platform",
+    yaxis_title="Average Movie Ratings")
+    fig.show()
 
 def main():
     url = 'https://www.imdb.com/list/ls091520106/'
