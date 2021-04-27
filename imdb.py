@@ -88,7 +88,6 @@ def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
-    cur.execute("DROP TABLE IF EXISTS Movie")
     cur.execute('CREATE TABLE IF NOT EXISTS Movies ("id" TEXT PRIMARY KEY, "title" TEXT, "platform" TEXT, "reviews" INTEGER)')
     conn.commit()
     return cur, conn
@@ -116,7 +115,7 @@ def createScatter(cur, conn):
     fig.update_layout(
     title="Reviews vs Movie Ratings",
     xaxis_title="Movie Ratings",
-    yaxis_title="Number of Reviews")
+    yaxis_title="Number ofReviews")
     fig.show()
 
 def main():
