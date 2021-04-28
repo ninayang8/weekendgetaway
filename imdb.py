@@ -8,6 +8,7 @@ import sqlite3
 import json
 import plotly.express as px
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
 def get_title(soup):
     anchor = soup.find('div', class_ = 'lister list detail sub-list')
@@ -30,20 +31,6 @@ def get_link(soup):
             movie_links.append(link)
     
     return movie_links
-
-def get_movie_ratings(soup, links):
-    movie_ratings = []
-
-    for i in range(len(links)):
-        movie_url = "https://www.imdb.com" + links[i]
-        r = requests.get(movie_url)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        anchor = soup.find('div', class_ = 'ratingValue')
-        anchor1 = anchor.find('span', itemprop="ratingValue").text
-        rating = float(anchor1)
-        movie_ratings.append(rating)
-
-    return movie_ratings
 
 def get_movie_reviews(soup, links):
     movie_reviews = []
@@ -96,10 +83,16 @@ def addEntriesToDatabase(cur, conn, soup, links):
     title = get_title(soup)
     platform = where_stream(soup, links)
     reviews = get_movie_reviews(soup, links)
-    x = 0
-    for i in range(100):
-        cur.execute('INSERT INTO Movies (id, title, platform, reviews) VALUES (?, ?, ?, ?)', (i+1, title[x], platform[x], reviews[x],))
+    x = 1
+    cursor = cur.execute('SELECT id from Movies')
+    for row in cursor:
         x += 1
+    for i in range(x, x + 25):
+        try:
+            cur.execute('INSERT INTO Movies (id, title, platform, reviews) VALUES (?, ?, ?, ?)', (x, title[x-1], platform[x-1], reviews[x-1],))
+            x += 1
+        except:
+            pass
     conn.commit()
 
 def RatingVsReviews(cur, conn):
@@ -115,7 +108,7 @@ def RatingVsReviews(cur, conn):
     fig.update_layout(
     title="Reviews vs Movie Ratings",
     xaxis_title="Movie Ratings",
-    yaxis_title="Number of Reviews")
+    yaxis_title="Number ofReviews")
     fig.show()
 
 def PlatformVsRating(cur,conn):
@@ -140,15 +133,21 @@ def PlatformVsRating(cur,conn):
             cumulative_rating[platform[i]] = rating[i]
         else:
             cumulative_rating[platform[i]] += rating[i]
-    for x in platform_count.keys():
-        platform_count[x] = cumulative_rating[x] / platform_count[x]
+    platforms = list(platform_count.keys())
+    ratings = list(platform_count.values())
+
+    f = open('imdb_calculations.txt', "a")
+    f.write("---------------------------\n")
+
+    for i in range(len(platforms)):
+        f.write(str(platforms[i]) + " has an average rating of " + str(ratings[i]) + ".\n")
+
+    f.close()
     
-    fig = px.bar(platform_count.keys(), platform_count.values())
-    fig.update_layout(
-    title="Average Movie Ratings of Movies Available on Each Platform",
-    xaxis_title="Platform",
-    yaxis_title="Average Movie Ratings")
-    fig.show()
+    plt.bar(platforms, ratings, align='center')
+    plt.ylabel('Average Movie Rating')
+    plt.title('Average Movie Ratings of Movies Available on Each Platform')
+    plt.show()
 
 def main():
     url = 'https://www.imdb.com/list/ls091520106/'
@@ -163,8 +162,9 @@ def main():
 
     cur, conn = setUpDatabase("Database.db")
     # addEntriesToDatabase(cur, conn, soup, links)
-    RatingVsReviews(cur, conn)
+    # RatingVsReviews(cur, conn)
     PlatformVsRating(cur,conn)
+
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
+{\fonttbl}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+}---------------------------
+---------------------------
+Prime Video has an average rating of 8.494871794871798.
+SHOWTIME has an average rating of 8.633333333333333.
+HBO Max has an average rating of 8.586363636363638.
+HBO has an average rating of 8.466666666666667.
+Netflix has an average rating of 8.48.
+AMC+ has an average rating of 8.6.
+STARZ has an average rating of 8.4.
+FXNOW has an average rating of 8.5.
+Available on Amazon has an average rating of 8.433333333333332.
+Tubi has an average rating of 8.5.
+Bravo Now has an average rating of 8.5.
+Hulu has an average rating of 8.55.
+Paramount+ has an average rating of 8.4.
+Watch Free on IMDb TV has an average rating of 8.350000000000001.
+Pluto TV has an average rating of 8.4.
+Cinemax has an average rating of 8.3.
+See TV Listings has an average rating of 8.3.
+Magnolia Selects has an average rating of 8.3.
+---------------------------
+Prime Video has an average rating of 39.
+SHOWTIME has an average rating of 6.
+HBO Max has an average rating of 22.
+HBO has an average rating of 6.
+Netflix has an average rating of 5.
+AMC+ has an average rating of 1.
+STARZ has an average rating of 4.
+FXNOW has an average rating of 2.
+Available on Amazon has an average rating of 3.
+Tubi has an average rating of 1.
+Bravo Now has an average rating of 1.
+Hulu has an average rating of 2.
+Paramount+ has an average rating of 1.
+Watch Free on IMDb TV has an average rating of 2.
+Pluto TV has an average rating of 1.
+Cinemax has an average rating of 1.
+See TV Listings has an average rating of 2.
+Magnolia Selects has an average rating of 1.

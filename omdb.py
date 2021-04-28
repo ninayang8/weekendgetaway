@@ -7,12 +7,8 @@ import plotly.express as px
 
 API_KEY = "2a2f5075"
 
-def create_request_url(cur, conn, title):
-    rows = cur.execute('SELECT id FROM Movies')
-    count = 0
-    for row in rows:
-        count += 1
-    base_url = 'http://www.omdbapi.com/?t={}&apikey=2a2f5075&type=movie&plot=short&r=json'+ '&limit=25' + '&offset=' + str(count)
+def create_request_url(title):
+    base_url = 'http://www.omdbapi.com/?t={}&apikey=2a2f5075&type=movie&plot=short&r=json'
     request_url = base_url.format(title)
     return request_url
 
@@ -22,7 +18,7 @@ def get_title_and_rating(cur, conn):
     movie_list = cur.fetchall()
 
     for movie in movie_list:
-        url = create_request_url(cur, conn, movie)
+        url = create_request_url(movie)
         try:
             r = requests.get(url)
             data = json.loads(r.text)
@@ -41,7 +37,7 @@ def get_box_office(cur, conn):
     movie_list = cur.fetchall()
 
     for movie in movie_list:
-        url = create_request_url(cur, conn, movie)
+        url = create_request_url(movie)
         try:
             r = requests.get(url)
             data = json.loads(r.text)
@@ -69,12 +65,17 @@ def create_database(db_name):
 def setUpMoviesTable(cur, conn):
     movie_and_rating = get_title_and_rating(cur, conn)
     box_office = get_box_office(cur, conn)
-    cur.execute('DROP TABLE IF EXISTS omdbMovies')
     cur.execute('CREATE TABLE IF NOT EXISTS omdbMovies("id" TEXT PRIMARY KEY, "rating" REAL, "box_office" TEXT)')
+    cursor = cur.execute('SELECT id from omdbMovies')
     x = 1
-    for i in range(len(movie_and_rating)):
-        cur.execute('INSERT INTO omdbMovies (id, rating, box_office) VALUES (?, ?, ?)', (x, movie_and_rating[i][1], box_office[i], ))
+    for row in cursor:
         x += 1
+    for i in range(x, x + 25):
+        try:
+            cur.execute('INSERT INTO omdbMovies (id, rating, box_office) VALUES (?, ?, ?)', (x, movie_and_rating[i-1][1], box_office[i-1], ))
+            x += 1
+        except:
+                pass
     conn.commit()
 
 def RatingVsBoxOfficePlot(cur, conn):
@@ -101,8 +102,8 @@ def main():
     cur, conn = create_database('Database.db')
     # get_title_and_rating(cur, conn)
     # get_box_office(cur, conn)
-    # setUpMoviesTable(cur, conn)
-    RatingVsBoxOfficePlot(cur, conn)
+    setUpMoviesTable(cur, conn)
+    #RatingVsBoxOfficePlot(cur, conn)
 
 if __name__ == "__main__":
     main()
