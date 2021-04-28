@@ -1,4 +1,46 @@
-$$ price has an average of 4.180555555555555 ratings.
-$ price has an average of 4.333333333333333 ratings.
-$$$ price has an average of 4.0 ratings.
-$$$$ price has an average of 4.25 ratings.
+$$ price has an average of 4.025316455696203 ratings.
+$ price has an average of 4.258620689655173 ratings.
+$$$ price has an average of 3.8181818181818183 ratings.
+$$$$ price has an average of 4.583333333333333 ratings.
+
+------------------------------------------------
+------------------------------------------------
+
+Washington St has an average of 3.7142857142857144 ratings on the street.
+Detroit St has an average of 4.25 ratings on the street.
+Liberty St has an average of 4.026315789473684 ratings on the street.
+State St has an average of 3.9166666666666665 ratings on the street.
+Main St has an average of 4.076923076923077 ratings on the street.
+Jackson Ave has an average of 4.0 ratings on the street.
+Maple Rd has an average of 4.5 ratings on the street.
+4th Ave has an average of 4.5 ratings on the street.
+5th Ave has an average of 4.25 ratings on the street.
+William St has an average of 4.333333333333333 ratings on the street.
+Rosewood St has an average of 4.5 ratings on the street.
+Plymouth Rd has an average of 4.214285714285714 ratings on the street.
+Packard St has an average of 4.2 ratings on the street.
+Washtenaw Ave has an average of 4.0 ratings on the street.
+Nickels Arcade has an average of 4.0 ratings on the street.
+Huron St has an average of 4.0 ratings on the street.
+Maynard St has an average of 4.0 ratings on the street.
+Plaza Dr has an average of 4.5 ratings on the street.
+E Liberty has an average of 4.0 ratings on the street.
+Eisenhower Pkwy has an average of 4.1 ratings on the street.
+Valley Dr has an average of 4.25 ratings on the street.
+University Ave has an average of 4.0 ratings on the street.
+Stadium Blvd has an average of 4.25 ratings on the street.
+Broadway St has an average of 4.25 ratings on the street.
+Ashley St has an average of 4.25 ratings on the street.
+Depot St has an average of 3.5 ratings on the street.
+Catherine St has an average of 3.5 ratings on the street.
+Zeeb Rd has an average of 4.0 ratings on the street.
+311 Maynard has an average of 3.5 ratings on the street.
+Jefferson St has an average of 4.5 ratings on the street.
+Jackson Rd has an average of 4.0 ratings on the street.
+Thayer St has an average of 4.0 ratings on the street.
+Dexter Ave has an average of 4.0 ratings on the street.
+Carpenter Rd has an average of 3.75 ratings on the street.
+Church St has an average of 3.5 ratings on the street.
+1st St has an average of 3.5 ratings on the street.
+Hogback Rd has an average of 3.5 ratings on the street.
+Conor O'neill's has an average of 3.5 ratings on the street.

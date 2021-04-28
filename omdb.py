@@ -7,12 +7,8 @@ import plotly.express as px
 
 API_KEY = "2a2f5075"
 
-def create_request_url(cur, conn, title):
-    rows = cur.execute('SELECT id FROM Movies')
-    count = 0
-    for row in rows:
-        count += 1
-    base_url = 'http://www.omdbapi.com/?t={}&apikey=2a2f5075&type=movie&plot=short&r=json'+ '&limit=25' + '&offset=' + str(count)
+def create_request_url(title):
+    base_url = 'http://www.omdbapi.com/?t={}&apikey=2a2f5075&type=movie&plot=short&r=json'
     request_url = base_url.format(title)
     return request_url
 
@@ -22,11 +18,11 @@ def get_title_and_rating(cur, conn):
     movie_list = cur.fetchall()
 
     for movie in movie_list:
-        url = create_request_url(cur, conn, movie)
+        url = create_request_url(movie)
         try:
             r = requests.get(url)
             data = json.loads(r.text)
-            if data == {"Response":"False", "Error":"Movie not found!"}:
+            if data == {"Response":"False", "Error": "Movie not found!"}:
                 continue
             else:
                 t = (movie[0], data['imdbRating'])
