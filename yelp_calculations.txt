@@ -1,4 +1,4 @@
-$$ price has an average of 3.953781512605042 ratings.
-$ price has an average of 4.154545454545454 ratings.
-$$$ price has an average of 3.8181818181818183 ratings.
-$$$$ price has an average of 4.433333333333334 ratings.
+$$ price has an average of 4.180555555555555 ratings.
+$ price has an average of 4.333333333333333 ratings.
+$$$ price has an average of 4.0 ratings.
+$$$$ price has an average of 4.25 ratings.

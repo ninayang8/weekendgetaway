@@ -32,7 +32,7 @@ def setUpDatabase(db_name):
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     cur.execute('CREATE TABLE IF NOT EXISTS Restaurants ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "category" TEXT, "rating" REAL, "price" TEXT)')
-    cur.execute('CREATE TABLE IF NOT EXISTS Locations ("restaurant_id" TEXT PRIMARY KEY, "name" TEXT, "location" TEXT, "address" TEXT, "latitude" REAL, "longitude" REAL)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Locations ("restaurant_id" TEXT PRIMARY KEY, "location" TEXT, "address" TEXT, "latitude" REAL, "longitude" REAL)')
     conn.commit()
     return cur, conn
 def addEntriesToDatabase(cur, conn, data, location):
@@ -44,7 +44,7 @@ def addEntriesToDatabase(cur, conn, data, location):
     for d in data['businesses']:
         try:
             cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (count, d["name"], d["categories"][0]["title"], float(d["rating"]), d["price"],))
-            cur.execute('INSERT INTO Locations (restaurant_id, name, location, address, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)', (count, d["name"], location, d["location"]["address1"], float(d["coordinates"]["latitude"]), float(d["coordinates"]["longitude"])))
+            cur.execute('INSERT INTO Locations (restaurant_id, location, address, latitude, longitude) VALUES (?, ?, ?, ?, ?)', (count, location, d["location"]["address1"], float(d["coordinates"]["latitude"]), float(d["coordinates"]["longitude"])))
         except:
             cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (count, d["name"], d["categories"][0]["title"], float(d["rating"]), "$$$$",))
         count += 1
@@ -63,7 +63,7 @@ def RatingVsPricePlot(cur, conn):
             values[len(price[x])] = []
         values[len(price[x])].append(rating[x])
 
-    f = open("yelp_calculations.txt", "w")
+    f = open("yelp_calculations.txt", "w+")
 
     for x in values.keys():
         values[x] = sum(values[x]) / len(values[x])
@@ -94,8 +94,14 @@ def StreetVsRating(cur, conn):
         streetRatings[x] = sum(streetRatings[x]) / len(streetRatings[x])
     #     f.write(x + " has an average of " + str(streetRatings[x]) + " ratings on the street.\n")
 
-    lst = list(streetRatings.items())
-    print(lst)
+    streets = list(streetRatings.keys())[:10]
+    ratings = list(streetRatings.values())[:10]
+
+    plt.bar(streets, ratings, align='center')
+    plt.ylabel('Ratings')
+    plt.title('Average Ratings of Restaurants for Popular Streets in Ann Arbor')
+    plt.show()
+
 
 
 def MapPlot(cur, conn):
@@ -106,7 +112,7 @@ def MapPlot(cur, conn):
     latitude = []
     longitude = []
 
-    cursor = cur.execute("SELECT name, latitude, longitude FROM Locations")
+    cursor = cur.execute("SELECT name, latitude, longitude FROM Locations JOIN Restaurants WHERE Locations.restaurant_id = Restaurants.restaurant_id")
     for row in cursor:
         name.append(row[0])
         latitude.append(row[1])
@@ -144,14 +150,13 @@ def main():
     # cur.execute("DROP TABLE IF EXISTS Restaurants")
     # cur.execute("DROP TABLE IF EXISTS Locations")
 
-    # url = get_url(cur, conn, 'Ann Arbor')
-    # data = request_data(url)
-    # data = json.loads(data)
+    url = get_url(cur, conn, 'Ann Arbor')
+    data = request_data(url)
+    data = json.loads(data)
 
-    # addEntriesToDatabase(cur, conn, data, "Ann Arbor")
+    addEntriesToDatabase(cur, conn, data, "Ann Arbor")
 
     RatingVsPricePlot(cur, conn)
-    # RatingVsPricePlot(cur, conn)
     StreetVsRating(cur, conn)
     MapPlot(cur, conn)
     
