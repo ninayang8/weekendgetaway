@@ -79,7 +79,7 @@ def StreetVsRating(cur, conn):
 
     streetRatings = {}
 
-    cursor = cur.execute("SELECT rating, address FROM Restaurants JOIN Locations WHERE Locations.name = Restaurants.name")
+    cursor = cur.execute("SELECT rating, address FROM Restaurants JOIN Locations WHERE Locations.restaurant_id = Restaurants.restaurant_id")
     for row in cursor:
         address = row[1].split()
         address = address[-2] + " " + address[-1]
@@ -153,7 +153,7 @@ def main():
     RatingVsPricePlot(cur, conn)
     # RatingVsPricePlot(cur, conn)
     StreetVsRating(cur, conn)
-    # MapPlot(cur, conn)
+    MapPlot(cur, conn)
     
 
 

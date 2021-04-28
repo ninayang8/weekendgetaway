@@ -12,19 +12,6 @@ def create_request_url(title):
     request_url = base_url.format(title)
     return request_url
 
-def open_file():
-    root_path = os.path.dirname(os.path.abspath(__file__))
-    filename = os.path.join(root_path, 'movies.txt')        
-    file_obj = open(filename, 'r', errors='replace', encoding='utf-8-sig')
-    movies = file_obj.readlines()
-    file_obj.close()
-    list = []
-    for i in range(len(movies)):
-            movies[i] = movies[i].replace('\n', '')
-    for movie in movies:
-        list.append(movie)
-    return list
-
 def get_title_and_rating(cur, conn):
     title_and_rating = []
     cur.execute('SELECT title from Movies')
@@ -78,10 +65,11 @@ def create_database(db_name):
 def setUpMoviesTable(cur, conn):
     movie_and_rating = get_title_and_rating(cur, conn)
     box_office = get_box_office(cur, conn)
-    cur.execute('CREATE TABLE IF NOT EXISTS omdbMovies("id" TEXT PRIMARY KEY, "title" TEXT, "rating" REAL, "box_office" TEXT)')
+    cur.execute('DROP TABLE IF EXISTS omdbMovies')
+    cur.execute('CREATE TABLE IF NOT EXISTS omdbMovies("id" TEXT PRIMARY KEY, "rating" REAL, "box_office" TEXT)')
     x = 1
     for i in range(len(movie_and_rating)):
-        cur.execute('INSERT INTO omdbMovies (id, title, rating, box_office) VALUES (?, ?, ?, ?)', (x, movie_and_rating[i][0], movie_and_rating[i][1], box_office[i], ))
+        cur.execute('INSERT INTO omdbMovies (id, rating, box_office) VALUES (?, ?, ?)', (x, movie_and_rating[i][1], box_office[i], ))
         x += 1
     conn.commit()
 
@@ -96,9 +84,13 @@ def RatingVsBoxOfficePlot(cur, conn):
             rating.append(row[0])
             x = int(row[1])
             boxoffice.append(x)
-
-    fig = px.scatter(rating, boxoffice)
+    fig = px.scatter(x = rating, y = boxoffice)
+    fig.update_layout(
+    title="Box Office vs Movie Ratings",
+    xaxis_title="Movie Ratings",
+    yaxis_title="Box Office")
     fig.show()
+
 
 def main():
 

@@ -115,7 +115,7 @@ def RatingVsReviews(cur, conn):
     fig.update_layout(
     title="Reviews vs Movie Ratings",
     xaxis_title="Movie Ratings",
-    yaxis_title="Number ofReviews")
+    yaxis_title="Number of Reviews")
     fig.show()
 
 def PlatformVsRating(cur,conn):
@@ -155,7 +155,7 @@ def main():
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
 
-    get_title(soup)
+    # get_title(soup)
     # links = get_link(soup)
     # #get_movie_ratings(soup, links)
     # get_movie_reviews(soup, links)
@@ -164,7 +164,7 @@ def main():
     cur, conn = setUpDatabase("Database.db")
     # addEntriesToDatabase(cur, conn, soup, links)
     RatingVsReviews(cur, conn)
-
+    PlatformVsRating(cur,conn)
 
 if __name__ == "__main__":
     main()
