@@ -37,7 +37,7 @@ def get_box_office(cur, conn):
     movie_list = cur.fetchall()
 
     for movie in movie_list:
-        url = create_request_url(movie)
+        url = create_request_url(cur, conn, movie)
         try:
             r = requests.get(url)
             data = json.loads(r.text)
