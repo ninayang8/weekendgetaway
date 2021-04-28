@@ -133,8 +133,10 @@ def PlatformVsRating(cur,conn):
             cumulative_rating[platform[i]] = rating[i]
         else:
             cumulative_rating[platform[i]] += rating[i]
-    platforms = list(platform_count.keys())
-    ratings = list(platform_count.values())
+    for x in platform_count.keys():
+        platform_count[x] = cumulative_rating[x] / platform_count[x]
+    platforms = list(platform_count.keys())[:8]
+    ratings = list(platform_count.values())[:8]
 
     f = open('imdb_calculations.txt', "a")
     f.write("---------------------------\n")

@@ -22,7 +22,7 @@ def get_title_and_rating(cur, conn):
         try:
             r = requests.get(url)
             data = json.loads(r.text)
-            if data == {"Response":"False", "Error":"Movie not found!"}:
+            if data == {"Response":"False", "Error": "Movie not found!"}:
                 continue
             else:
                 t = (movie[0], data['imdbRating'])

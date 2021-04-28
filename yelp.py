@@ -23,10 +23,13 @@ def get_url(cur, conn, location):
         count += 1
     return 'https://api.yelp.com/v3/businesses/search?location=' + location + '&limit=25' + '&offset=' + str(count)
 
+
 def request_data(url):
     headers = {'Authorization': 'Bearer %s' % API_KEY,}
     r = requests.get(url, headers=headers)
     return r.text
+
+
 def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
@@ -35,6 +38,8 @@ def setUpDatabase(db_name):
     cur.execute('CREATE TABLE IF NOT EXISTS Locations ("restaurant_id" TEXT PRIMARY KEY, "location" TEXT, "address" TEXT, "latitude" REAL, "longitude" REAL)')
     conn.commit()
     return cur, conn
+
+
 def addEntriesToDatabase(cur, conn, data, location):
     
     rows = cur.execute('SELECT restaurant_id FROM Restaurants')
@@ -49,7 +54,9 @@ def addEntriesToDatabase(cur, conn, data, location):
             cur.execute('INSERT INTO Restaurants (restaurant_id, name, category, rating, price) VALUES (?, ?, ?, ?, ?)', (count, d["name"], d["categories"][0]["title"], float(d["rating"]), "$$$$",))
         count += 1
     conn.commit()
-def RatingVsPricePlot(cur, conn):
+
+
+def RatingVsPrice(cur, conn):
     rating = []
     price = []
     cursor = cur.execute("SELECT rating, price FROM Restaurants")
@@ -72,8 +79,6 @@ def RatingVsPricePlot(cur, conn):
             dollars += "$"
         f.write(dollars + " price has an average of " + str(values[x]) + " ratings.\n")
     
-    plt.bar(values.keys(), values.values())
-    plt.show()
 
 def StreetVsRating(cur, conn):
 
@@ -87,12 +92,12 @@ def StreetVsRating(cur, conn):
             streetRatings[address] = []
         streetRatings[address].append(row[0])
 
-    # f = open("yelp_calculations.txt", "a")
-    # f.write("\n------------------------------------------------\n------------------------------------------------\n\n")
+    f = open("yelp_calculations.txt", "a")
+    f.write("\n------------------------------------------------\n------------------------------------------------\n\n")
 
     for x in streetRatings.keys():
         streetRatings[x] = sum(streetRatings[x]) / len(streetRatings[x])
-    #     f.write(x + " has an average of " + str(streetRatings[x]) + " ratings on the street.\n")
+        f.write(x + " has an average of " + str(streetRatings[x]) + " ratings on the street.\n")
 
     streets = list(streetRatings.keys())[:10]
     ratings = list(streetRatings.values())[:10]
@@ -101,7 +106,6 @@ def StreetVsRating(cur, conn):
     plt.ylabel('Ratings')
     plt.title('Average Ratings of Restaurants for Popular Streets in Ann Arbor')
     plt.show()
-
 
 
 def MapPlot(cur, conn):
@@ -143,6 +147,7 @@ def MapPlot(cur, conn):
 
     fig.show()
 
+
 def main():
 
     cur, conn = setUpDatabase("Database.db")
@@ -156,7 +161,7 @@ def main():
 
     addEntriesToDatabase(cur, conn, data, "Ann Arbor")
 
-    RatingVsPricePlot(cur, conn)
+    RatingVsPrice(cur, conn)
     StreetVsRating(cur, conn)
     MapPlot(cur, conn)
     
